@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.shortcuts import render
 
-from products.models import ProductFeatured, Product
+from products.models import ProductFeatured, Product, Category
 from .forms import ContactForm, SignUpForm
 from .models import SignUp
 
@@ -13,6 +13,7 @@ def home(request):
 	featured_image = ProductFeatured.objects.filter(active=True).order_by("?").first()
 	products = Product.objects.all().order_by("?")[:6]
 	products2 = Product.objects.all().order_by("?")[:6]
+	categories = Category.objects.all().order_by("-title")
 
 	form = SignUpForm(request.POST or None)
 	context = {
@@ -20,7 +21,8 @@ def home(request):
 		"form": form,
 		"featured_image":featured_image,
 		"products":products,
-		"products2":products2
+		"products2":products2,
+		"categories": categories,
 	}
 
 

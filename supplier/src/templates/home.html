@@ -1,162 +1,183 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 {% load staticfiles %}
-
-
-{% block head_title %}Welcome | {{ block.super }}{% endblock %}
-
-<style>
-{% block style %}
-.navbar-static-top {
-	margin-bottom: 0px !important;
-}
-
-.jumbotron {
-	background-color:#5ACDFF;
-	color: #000;
-	{% if featured_image.make_image_background %} 
-	background-image: url("{{ featured_image.image.url }}");
-	background-repeat: no-repeat;
-	background-color: #000;
-	background-size: cover;
-	background-position-y: -272px;
-	{% endif %}
-}
-
-{% endblock %}
-</style>
-
-
-     
-{% block jumbotron %}
-
-	{% if featured_image %}
-		<div class="jumbotron" >
-		 <div class="container">
-			<div class="row">
-				<div class='col-sm-12 text-center {% if featured_image.text_right %} pull-right {% endif %}'>
-				<h1>{{ featured_image.product.title }}</h1>
-				<p>{{ featured_image.product.description }}</p>
-				<p>
-				<a class="btn btn-lg btn-primary" href="{{ featured_image.product.get_absolute_url }}" role="button">More Details </a>
-				</p>
-				</div>
-				{% if not featured_image.make_image_background %} 
-				<div class='col-sm-6' >
-					<img src="{{ featured_image.image.url }}" class='img-responsive' />
-		 		</div>
-		 		{% endif %}
-				</div>
-			</div>
-		 </div>
-
-
-	{% else %}
-	<div class="jumbotron">
-	 <div class="container">
-		<div class="row">
-			<div class='col-sm-6'>
-			<h1>Try Django 1.8</h1>
-			<p>The MVP Landing project is designed to get your project started. The goal is to help you launch as soon as possible with the least amount of investment using time or money. Join Us today.</p>
-			<p>
-			<a class="btn btn-lg btn-primary" href="" role="button">Join Us &raquo;</a>
-			</p>
-			</div>
-			<div class='col-sm-6' >
-				<iframe width="560" height="315" src="https://www.youtube.com/embed/2uLYO1LUf6Q" frameborder="0" allowfullscreen></iframe>
-
-	 		</div>
-			</div>
-		</div>
-	 </div>
-
-	 {% endif %}
-
-
-{% endblock %}
-
-
-
+{% load product_extras %}
 
 {% block content %}
-
-<div class='row'>
-<h3>Recommended Products</h3>
-{% include "products/products.html" with object_list=products col_class_set="col-sm-2" %}
-
-</div>
-
-<div class='row'>
-<h3>Featured Products</h3>
-{% include "products/products.html" with object_list=products2 %}
-
-</div>
-
-
-<!-- 
- {% if request.user.is_authenticated %}
-<h1>You are logged in!</h1>
-
-	{% if queryset %}
-	<h2>Welcome Staff</h2>
-	<table class='table'>
-	{% for instance in queryset %}
-		<tr><td>{{ forloop.counter }}</td><td>{{ instance.email }}</td><td>{{ instance.full_name }}</td><td>{{ instance.timestamp|timesince }} ago</td></tr>
-		{% if instance.email == "abc@gmail.edu" %}
-		<tr><td>is equal</td></tr>
-		{% endif %}
-	{% endfor %}
-	</table>
-
-	{% endif %}
-
- {% else %}
-<div class="row">
-
-  <div class="col-sm-3 pull-right">
-  	
-			<p class='lead text-align-center'>{{ title }}</p>
-
-			<form method='POST' action=''>{% csrf_token %}
-			{{ form|crispy }}
-
-			<input class='btn btn-primary' type='submit' value='Sign Up' />
-
-			</form>
+<section id="slider"><!--slider-->
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-12">
+				<div id="slider-carousel" class="carousel slide" data-ride="carousel">
+					<ol class="carousel-indicators">
+					{% for featured_prod in products2 %}
+						<li data-target="#slider-carousel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}""></li>
+					{% endfor %}
+					</ol>
+					
+					<div class="carousel-inner">
+					{% for featured_prod in products2 %}
+						<div class="item {% if forloop.first %}active{% endif %}">
+							<div class="col-sm-6">
+								<h1><span>E</span>-SHOPPER</h1>
+								<h2>Free E-Commerce Template</h2>
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
+								<form action="{{ featured_prod.get_absolute_url }}">
+									<button type="submit" class="btn btn-default get">Get it now</button>
+								</form>
+							</div>
+							<div class="col-sm-6">
+								<img src="{{ featured_prod.get_image_url }}" class="girl img-responsive" alt="" height="300" />
+								<img src="{% static 'images/home/pricing.png' %}"  class="pricing" alt="{{ featured_prod.price }}" />
+							</div>
+						</div>
+					{% endfor %}
+					</div>
+					
+					<a href="#slider-carousel" class="left control-carousel hidden-xs" data-slide="prev">
+						<i class="fa fa-angle-left"></i>
+					</a>
+					<a href="#slider-carousel" class="right control-carousel hidden-xs" data-slide="next">
+						<i class="fa fa-angle-right"></i>
+					</a>
+				</div>
+				
+			</div>
+		</div>
 	</div>
-
-	<div class='col-sm-3'>
-<p class='lead text-align-center'>Django &amp; Bootstrap</p>
-			<img src='{% static "img/marketing1.jpg" %}' class='img-responsive' />
-</div>
-
-<div class='col-sm-3'>
-<p class='lead text-align-center'>Created for Starters 
-<br/>
-<span class='fa-stack fa-lg fa-5x'>
-<i class='fa fa-comment-o fa-stack-2x'></i>
-<i style='color:yellow;' class="fa fa-bolt fa-stack-1x"></i>
-
-</span>
-</p>
-
-</div>
-
-<div class='col-sm-3'>
-<p class='lead text-align-center'>Always Open Source <br/><br/>
-
-<span class="fa-stack fa-lg fa-5x">
-<i class="fa fa-circle-o-notch fa-stack-2x"></i>
-
-  <i class="fa fa-github fa-stack-1x"></i>
-</span>
-</p>
+</section><!--/slider-->
 
 
-</div>
-
-
-</div>
-{% endif %} -->
+<section>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-3">
+				<div class="left-sidebar">
+					<h2>Category</h2>
+					<div class="panel-group category-products" id="accordian"><!--category-productsr-->
+						{% for c in categories %}
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4 class="panel-title"><a href="{{ c.get_absolute_url }}">{{ c.title | get_category_count }} {{ c.title }}</a></h4>
+							</div>
+						</div>
+						{% endfor %}
+					</div><!--/category-products-->
+				
+					<div class="price-range"><!--price-range-->
+						<h2>Price Range</h2>
+						<div class="well text-center">
+							 <input type="text" class="span2" value="" data-slider-min="0" data-slider-max="600" data-slider-step="5" data-slider-value="[250,450]" id="sl2" ><br />
+							 <b class="pull-left">$ 0</b> <b class="pull-right">$ 600</b>
+						</div>
+					</div><!--/price-range-->
+					
+					<div class="shipping text-center"><!--shipping-->
+						<img src="{% static 'images/home/shipping.jpg' %}" alt="" />
+					</div><!--/shipping-->
+				</div>
+			</div>
+			
+			<div class="col-sm-9 padding-right">
+				<div class="features_items"><!--features_items-->
+					<h2 class="title text-center">Features Items</h2>
+					{% for p in products %}
+					<div class="col-sm-4">
+						<div class="product-image-wrapper">
+							<div class="single-products">
+									<div class="productinfo text-center">
+										<img src="{{ p.get_image_url }}" alt="" height="200"/>
+										<h2>$ {{ p.price }}</h2>
+										<p>{{ p.title }}</p>
+										<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+									</div>
+									<div class="product-overlay">
+										<div class="overlay-content">
+											<h2>$ {{ p.price }}</h2>
+											<p>{{ p.title }}</p>
+											<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+										</div>
+									</div>
+							</div>
+							<div class="choose">
+								<ul class="nav nav-pills nav-justified">
+									<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+									<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</div><!--features_items-->
+				
+				<div class="category-tab"><!--category-tab-->
+					<div class="col-sm-12">
+						<ul class="nav nav-tabs">
+							{% for c in categories %}
+							<li class="{% if forloop.first %}active{% endif %}"><a href="#{{c.title}}" data-toggle="tab">{{ c.title }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+					<div class="tab-content">
+						{% for c in categories %}
+							<div class="tab-pane fade{% if forloop.first %} active in{% endif %}" id="{{c.title}}" >
+								{% for p in c|filter_by_category %}
+									<div class="col-sm-3">
+										<div class="product-image-wrapper">
+											<div class="single-products">
+												<div class="productinfo text-center">
+													<img src="{{ p.get_image_url }}" alt="{{ p.title }}" height="200" />
+													<h2>${{ p.price }}</h2>
+													<p>{{ p.title }}</p>
+													<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								{% endfor %}
+							</div>
+						{% endfor %}
+						</div>						
+					</div>
+				</div><!--/category-tab-->
+				
+				<div class="col-sm-12 recommended_items"><!--recommended_items-->
+					<h2 class="title text-center">recommended items</h2>
+					
+					<div id="recommended-item-carousel" class="carousel slide" data-ride="carousel">
+						<div class="carousel-inner">
+							<div class="item active">	
+								{% for recommended_prod in products2 %}
+								<div class="col-sm-4">
+									<div class="product-image-wrapper">
+										<div class="single-products">
+											<div class="productinfo text-center">
+												<img src="{{ recommended_prod.get_image_url }}" alt="{{ recommended_prod.title }}"  height="300" />
+												<h2>${{ recommended_prod.price }}</h2>
+												<p>{{ recommended_prod.title }}</p>
+												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											</div>											
+										</div>
+									</div>
+								</div>
+								{% if forloop.counter|divisibleby:3 and not forloop.last %}
+								</div><div class="item">
+								{% endif %}
+							{% endfor %}
+							</div>
+						</div>
+						 <a class="left recommended-item-control" href="#recommended-item-carousel" data-slide="prev">
+							<i class="fa fa-angle-left"></i>
+						  </a>
+						  <a class="right recommended-item-control" href="#recommended-item-carousel" data-slide="next">
+							<i class="fa fa-angle-right"></i>
+						  </a>			
+					</div>
+				</div><!--/recommended_items-->
+				
+			</div>
+		</div>
+	</div>
+</section>
 
 {% endblock %}
