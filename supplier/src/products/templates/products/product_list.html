@@ -1,8 +1,8 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
+<!--{#{% load crispy_forms_tags %}
 
 
-{% block content %}
+{% block conte %}
 
 <div class='col-sm-2'>
 <form method="GET" action="{% url 'products' %}">
@@ -28,5 +28,44 @@ Nothing found
 {% endif %}
 
 </div>
+
+{% endblock %}#}-->
+{% load  staticfiles %}
+{% load product_extras %}
+
+{% block content %}
+<section id="advertisement">
+	<div class="container">
+		<img src="{% static 'images/shop/advertisement.jpg' %}" alt="" />
+	</div>
+</section>
+	
+<section>
+	<div class="container">
+		<div class="row">
+
+		{% include 'categories-sidebar.html' with object_list=categories %}
+
+			<div class="col-sm-9 padding-right">
+				{% include 'featured-items.html' %}
+				
+				{% block featured_item_pagination %}
+				<ul class="pagination">
+					{% with ''|center:object_list.count as pages %}
+					{% for _ in pages%}
+					{% if forloop.counter|divisibleby:10 %}
+					<li><a href="">{{ forloop.counter }}</a></li>
+					{% elif forloop.first %}
+					<li class="active"><a href="">{{ forloop.counter }}</a></li>
+					{% endif %}
+					{% endfor %}
+					<li><a href="">&raquo;</a></li>
+					{% endwith %}
+				</ul>
+				{% endblock %}
+			</div>
+		</div>
+	</div>
+</section>
 
 {% endblock %}

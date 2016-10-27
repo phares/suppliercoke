@@ -134,6 +134,7 @@ class ProductListView(FilterMixin, ListView):
 		context["now"] = timezone.now()
 		context["query"] = self.request.GET.get("q") #None
 		context["filter_form"] = ProductFilterForm(data=self.request.GET or None)
+		context["categories"] = Category.objects.all().order_by("-title")
 		return context
 
 	def get_queryset(self, *args, **kwargs):
@@ -164,6 +165,7 @@ class ProductDetailView(DetailView):
 		instance = self.get_object()
 		#order_by("-title")
 		context["related"] = sorted(Product.objects.get_related(instance)[:6], key= lambda x: random.random())
+		context["categories"] = Category.objects.all().order_by("-title")
 		return context
 
 

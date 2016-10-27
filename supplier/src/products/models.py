@@ -50,6 +50,10 @@ class Product(models.Model):
 			return img.image.url
 		return img #None
 
+	def get_gallery_image_urls(self):
+		images = self.productimage_set.all()
+		return [img.image.url for img in images]
+
 
 
 
